@@ -1,0 +1,26 @@
+To Do:
+
+Aesthetics:
+Use custom cursor icons - Not necessary.
+✓ Add a status bar in the bottom. Should display the latency, should show a loading circle. Should show the last 2 items in the tree, 
+show the tier level.
+    load state circle doesn't show up - should show up between fetching and rendering, should disappear when rendering is done.
+    latency should be calculated as the time between the request being sent and the response being fully rendered
+    latency is not being updated currently
+    The breadcrumbs should show the last 2 items in the tree, should show the tier level. Currently only shows the start and the first item
+
+
+
+Functionality:
+The cards that were once in view, but now aren't shouldn't populate
+Should I add sound effects?
+Need to build a mobile version: 
+    Change the "evidence board" style to rogue-like experience
+    Every reproduction gives 3 or less cards - Display them on the screen as "power-ups or boons" in rogue-like terms
+    Tapping on individual links to open cards independently should be disabled
+    Choose one to progress down the rabbit-hole
+    Status bar should move to the top, should display a load circle?
+    Should there be a way to go back?
+    Should onboard/introduce all the gestures/controls
+
+
