@@ -268,6 +268,10 @@ export function initBoardPage(container, initialArticle) {
   // Add zoom functionality
   boardPage.addEventListener('wheel', (e) => {
     e.preventDefault()
+    
+    // If panning, update startX/startY to prevent jump after zoom
+    const wasPanning = isPanning
+    
     const delta = e.deltaY * -0.001
     const newScale = Math.min(Math.max(0.3, scale + delta), 3)
     
@@ -286,6 +290,12 @@ export function initBoardPage(container, initialArticle) {
     // Adjust translation so the point under cursor stays in place
     translateX = mouseX - canvasX * scale
     translateY = mouseY - canvasY * scale
+    
+    // If panning, recalculate startX/startY to match new translate values
+    if (wasPanning) {
+      startX = e.clientX - translateX
+      startY = e.clientY - translateY
+    }
     
     updateTransform()
     updateDepthColors() // Update colors based on distance from origin

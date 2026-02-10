@@ -1,6 +1,6 @@
 To Do:
 
-Aesthetics:
+Aesthetics: DONE
 Use custom cursor icons - Not necessary.
 ✓ Add a status bar in the bottom. Should display the latency, should show a loading circle. Should show the last 2 items in the tree, 
 show the tier level.
@@ -12,7 +12,7 @@ show the tier level.
 
 
 Functionality:
-The cards that were once in view, but now aren't shouldn't populate
+The cards that were once in view, but now aren't shouldn't populate - Done
 Should I add sound effects?
 Need to build a mobile version: 
     Change the "evidence board" style to rogue-like experience
@@ -23,4 +23,16 @@ Need to build a mobile version:
     Should there be a way to go back?
     Should onboard/introduce all the gestures/controls
 
+Need a finish screen:
+    Show stats - time spent, visualization of the tree, and the visualization of how much they've strayed from the main path
+    Option to restart
+    Show the Inflection points (don't know how to implement this yet) (nor do i know how to define an inflection point)
+    The button to end the session should be in the status bar (open a pop up to confirm, should have changing text based on the tier level)
+    Maybe use "Rescue Me" as the button text
 
+NEXT STEPS:
+We need to be able to track all the tunnels that people go through. I do not need their names, personal details etc, 
+just the tunnel. This will help us build the finish screen (this is something im planning on doing later. 
+i wanna show stats and stuff), help me setup supabase for this
+
+Maybe write a python script to simulate users going through the tunnels, to enrich the data in the database
