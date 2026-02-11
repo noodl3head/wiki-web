@@ -200,7 +200,7 @@ export function initBoardPage(container, initialArticle) {
   function isCardInCenter(cardData) {
     const viewportCenterX = window.innerWidth / 2
     const viewportCenterY = window.innerHeight / 2
-    const centerRegionWidth = window.innerWidth * 0.3
+    const centerRegionWidth = window.innerWidth * 0.5
     const centerRegionHeight = window.innerHeight * 0.3
     
     const cardCenterX = cardData.x * scale + translateX + 200 * scale
@@ -214,14 +214,14 @@ export function initBoardPage(container, initialArticle) {
   
   // Check if any cards are in center and should auto-expand
   function checkCenterCards() {
-    // Don't auto-expand when zoomed out
-    if (scale < 1) return
+    // Don't auto-expand when zoomed out too far
+    if (scale < 0.7) return
     
     const viewportCenterX = window.innerWidth / 2
     const viewportCenterY = window.innerHeight / 2
     
-    // Define center region as 30% of viewport dimensions
-    const centerRegionWidth = window.innerWidth * 0.3
+    // Define center region as 50% horizontal, 30% vertical of viewport dimensions
+    const centerRegionWidth = window.innerWidth * 0.5
     const centerRegionHeight = window.innerHeight * 0.3
     
     articles.forEach(cardData => {
@@ -460,12 +460,16 @@ export function initBoardPage(container, initialArticle) {
     
     // First, collect all valid links
     const allValidLinks = []
+    const parentTitle = cardData.parent?.data?.title
     for (let link of links) {
       const href = link.getAttribute('href')
       const articleTitle = decodeURIComponent(
         href.replace('/wiki/', '').replace(/_/g, ' ')
       )
-      if (!articleTitle.includes(':') && !allValidLinks.includes(articleTitle)) {
+      // Skip if: contains colon, already in list, or matches parent card
+      if (!articleTitle.includes(':') && 
+          !allValidLinks.includes(articleTitle) &&
+          articleTitle !== parentTitle) {
         allValidLinks.push(articleTitle)
       }
     }

@@ -10,32 +10,61 @@ let state = {
   isLoading: false
 }
 
-const treeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="13" viewBox="0 0 16 13" fill="none">
-  <rect x="10.3662" width="5.12071" height="1.66979" fill="currentColor"/>
-  <rect x="10.3662" y="5.45148" width="5.12071" height="1.66979" fill="currentColor"/>
-  <rect x="10.3662" y="10.9031" width="5.12071" height="1.66979" fill="currentColor"/>
-  <path d="M5.23462 6.34902C5.23462 6.34902 6.58084 6.34902 7.35106 6.34902M10.9394 6.34902C10.9394 6.34902 8.57956 6.34902 7.35106 6.34902M7.35106 6.34902C7.35106 4.32527 7.32482 2.51359 8.96712 1.3888C9.45193 1.05677 10.06 0.844276 10.646 0.802063M7.35106 6.34902C7.35106 8.47581 7.41399 10.0803 8.96712 11.1663C9.494 11.5347 9.84401 11.7031 10.646 11.753" stroke="currentColor" stroke-width="0.678206"/>
-  <rect y="5.32587" width="5.89152" height="1.92114" fill="currentColor"/>
+const tunnelIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 64 64" fill="none">
+  <ellipse cx="32" cy="29.1118" rx="25.3594" ry="6.21545" fill="currentColor"/>
+  <path d="M60.9514 30.0757C60.9514 34.5812 47.9894 38.2336 32 38.2336C16.0106 38.2336 3.04858 34.5812 3.04858 30.0757" stroke="currentColor"/>
+</svg>`
+
+const searchIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+  <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</svg>`
+
+const homeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <path d="M3 10L10 3L17 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M5 8V17H15V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </svg>`
 
 export function createStatusBar(container) {
   statusBarEl = document.createElement('div')
   statusBarEl.className = 'status-bar'
   statusBarEl.innerHTML = `
-    <div class="status-bar-left">
-      <div class="tier-number">
-        <span class="tier-value">01</span>
+    <div class="status-bar-ghost">
+      <div class="latency-indicator">
+        <span class="latency-dot"></span>
+        <span class="latency-value">-- ms</span>
       </div>
-      <button class="get-tree-btn">
-        ${treeIcon}
-        <span>Get Tree</span>
-      </button>
-      <div class="breadcrumbs">
-        <span class="breadcrumb-prev"></span>
-        <span class="breadcrumb-current">Start</span>
+      <div class="bunny-container">
+        <img src="/bunny-terraria.png" class="bunny bunny-static" alt="" />
+        <img src="/bunny-terraria.gif" class="bunny bunny-animated" alt="" />
       </div>
     </div>
-    <div class="status-bar-right">
+    <div class="status-bar-center">
+      <div class="tunnel-info-container">
+        <div class="tunnel-info-left">
+          <div class="tier-number">
+            <span class="tier-value">01</span>
+          </div>
+          <div class="breadcrumbs">
+            <span class="breadcrumb-prev"></span>
+            <span class="breadcrumb-current">Start</span>
+          </div>
+        </div>
+        <button class="get-tree-btn">
+          ${tunnelIcon}
+          <span>See Tunnel</span>
+        </button>
+      </div>
+      <div class="action-bar-container">
+        <button class="action-btn search-btn">
+          ${searchIcon}
+        </button>
+        <button class="action-btn home-btn">
+          ${homeIcon}
+        </button>
+      </div>
+    </div>
+    <div class="latency-load-pill">
       <div class="latency-indicator">
         <span class="latency-dot"></span>
         <span class="latency-value">-- ms</span>
@@ -67,6 +96,18 @@ export function createStatusBar(container) {
   const getTreeBtn = statusBarEl.querySelector('.get-tree-btn')
   getTreeBtn.addEventListener('click', showTreeModal)
   
+  const searchBtn = statusBarEl.querySelector('.search-btn')
+  searchBtn.addEventListener('click', () => {
+    // TODO: Implement search functionality
+    console.log('Search clicked')
+  })
+  
+  const homeBtn = statusBarEl.querySelector('.home-btn')
+  homeBtn.addEventListener('click', () => {
+    // TODO: Implement home functionality
+    console.log('Home clicked')
+  })
+  
   const closeBtn = treeModalEl.querySelector('.tree-modal-close')
   closeBtn.addEventListener('click', hideTreeModal)
   
@@ -74,7 +115,22 @@ export function createStatusBar(container) {
     if (e.target === treeModalEl) hideTreeModal()
   })
   
+  // Sync ghost container width with latency pill after render
+  requestAnimationFrame(() => {
+    syncGhostWidth()
+  })
+  
   return statusBarEl
+}
+
+function syncGhostWidth() {
+  if (!statusBarEl) return
+  const latencyPill = statusBarEl.querySelector('.latency-load-pill')
+  const ghost = statusBarEl.querySelector('.status-bar-ghost')
+  if (latencyPill && ghost) {
+    const width = latencyPill.offsetWidth
+    ghost.style.width = `${width}px`
+  }
 }
 
 function showTreeModal() {
@@ -129,11 +185,11 @@ export function updateStatusBar(updates) {
   
   if (updates.latency !== undefined) {
     state.latency = updates.latency
-    const latencyEl = statusBarEl.querySelector('.latency-value')
+    const latencyEl = statusBarEl.querySelector('.latency-load-pill .latency-value')
     latencyEl.textContent = state.latency > 0 ? `${state.latency} ms` : '-- ms'
     
     // Update dot color based on latency
-    const dotEl = statusBarEl.querySelector('.latency-dot')
+    const dotEl = statusBarEl.querySelector('.latency-load-pill .latency-dot')
     if (state.latency === 0) {
       dotEl.style.backgroundColor = '#888'
     } else if (state.latency < 300) {
@@ -147,8 +203,8 @@ export function updateStatusBar(updates) {
   
   if (updates.isLoading !== undefined) {
     state.isLoading = updates.isLoading
-    const bunnyStatic = statusBarEl.querySelector('.bunny-static')
-    const bunnyAnimated = statusBarEl.querySelector('.bunny-animated')
+    const bunnyStatic = statusBarEl.querySelector('.latency-load-pill .bunny-static')
+    const bunnyAnimated = statusBarEl.querySelector('.latency-load-pill .bunny-animated')
     if (state.isLoading) {
       bunnyStatic.style.opacity = '0'
       bunnyAnimated.style.opacity = '1'
@@ -157,6 +213,11 @@ export function updateStatusBar(updates) {
       bunnyAnimated.style.opacity = '0'
     }
   }
+  
+  // Sync ghost width after any update that might change pill width
+  requestAnimationFrame(() => {
+    syncGhostWidth()
+  })
 }
 
 export function setLoading(isLoading) {

@@ -117,7 +117,12 @@ export function initSearchPage(container, onArticleSelect) {
 
   function showAutocomplete(suggestions) {
     if (suggestions.length === 0) {
-      autocompleteEl.innerHTML = '<li class="suggestion-item" style="cursor: default;"><span>No results found</span></li>'
+      autocompleteEl.innerHTML = `
+        <li class="suggestion-item no-results">
+          <img src="/error-bunny.gif" alt="" class="error-bunny" />
+          <span class="no-results-text">We're not so sure about this :(</span>
+        </li>
+      `
       return
     }
 
@@ -130,9 +135,10 @@ export function initSearchPage(container, onArticleSelect) {
       </li>
     `).join('')
 
-    // Add click handlers
+    // Use mousedown instead of click - fires before blur event
     autocompleteEl.querySelectorAll('.autocomplete-item').forEach(item => {
-      item.addEventListener('click', () => {
+      item.addEventListener('mousedown', (e) => {
+        e.preventDefault() // Prevent input from losing focus
         const title = item.dataset.title
         onArticleSelect(title)
       })
